@@ -4,6 +4,7 @@ import React from "react";
 
 export default async function SettingsPage() {
   const session = await auth();
+  console.log({ user: session?.user.role });
   return (
     <div>
       {JSON.stringify(session)}
