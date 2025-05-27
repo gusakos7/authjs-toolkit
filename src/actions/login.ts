@@ -32,7 +32,6 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
           return { error: "An unexpected error occurred" }
       }
     }
-    console.log({ errorSOULEW: error })
     throw error; // Re-throw unexpected errors
     // console.error("Login error:", error);
     // return { error: "Login failed" }
