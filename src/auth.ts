@@ -35,15 +35,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   // * https://authjs.dev/reference/nextjs#callbacks
   callbacks: {
-    // * Restricting access
-    // async signIn({ user }) {
-    //   const existingUser = await getUserById(user.id)
-    //   console.log({ existingUser })
-    //   if (!existingUser || !existingUser.emailVerified) {
-    //     throw false
-    //   }
-    //   return true; // Allow sign-in if user exists and email is verified
-    // },
+    // * It will act as a fallback, if a user without emailVerified (logic in login action) will still not be able to login
+    async signIn({ user, account }) {
+      // Allow OAuth without email verification
+      if (account?.provider !== "credentials") return true;
+
+      if (!user.id) return false;
+      const existingUser = await getUserById(user.id);
+
+      // Prevent sign in without email verification
+      if (!existingUser?.emailVerified) return false
+
+      // TODO: Add 2FA check
+
+      return true; // Allow sign-in if user exists and email is verified
+    },
     async session({ session, token }) {
       if (token.sub && session.user) {
         session.user.id = token.sub; // Ensure user ID is available in the session

@@ -1,9 +1,12 @@
 "use server";
 
 import bcrypt from "bcryptjs";
-import { RegisterSchema } from "@/schemas";
 import { z } from "zod";
+
+import { RegisterSchema } from "@/schemas";
 import { createUser, getUserByEmail } from "@/data/user";
+import { generateVerificationToken } from "@/lib/tokens";
+import { sendVerificationEmail } from "@/lib/mail";
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
   try {
@@ -26,9 +29,11 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
       name,
     })
 
-    // TODO: Send a verification token email
+    // Send a verification token email
+    const verificationToken = await generateVerificationToken(email)
+    await sendVerificationEmail(verificationToken.email, verificationToken.token)
 
-    return { success: "User created" }
+    return { success: "Confirmation email sent" }
   } catch (error) {
     console.log({ error })
     return { error: "An error occurred while registering" }
