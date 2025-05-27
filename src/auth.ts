@@ -18,9 +18,24 @@ declare module "next-auth" {
     role?: string
   }
 }
-
+// * https://authjs.dev/guides/edge-compatibility#split-config
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  // * https://authjs.dev/reference/nextjs#events
+  pages: {
+    signIn: "/auth/login",
+    error: "/auth/error", // Error code passed in query string as ?error=
+  },
+  events: {
+    async linkAccount({ user }) {
+      await db.user.update({
+        where: { id: user.id },
+        data: { emailVerified: new Date() } // Automatically verify email when linking account
+      })
+    }
+  },
+  // * https://authjs.dev/reference/nextjs#callbacks
   callbacks: {
+    // * Restricting access
     // async signIn({ user }) {
     //   const existingUser = await getUserById(user.id)
     //   console.log({ existingUser })
