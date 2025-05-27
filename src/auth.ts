@@ -23,13 +23,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   // * https://authjs.dev/reference/nextjs#events
   pages: {
     signIn: "/auth/login",
-    error: "/auth/error", // Error code passed in query string as ?error=
+    error: "/auth/error",
   },
   events: {
     async linkAccount({ user }) {
       await db.user.update({
         where: { id: user.id },
-        data: { emailVerified: new Date() } // Automatically verify email when linking account
+        data: { emailVerified: new Date() }
       })
     }
   },
