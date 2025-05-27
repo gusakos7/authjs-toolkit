@@ -21,6 +21,14 @@ declare module "next-auth" {
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
+    // async signIn({ user }) {
+    //   const existingUser = await getUserById(user.id)
+    //   console.log({ existingUser })
+    //   if (!existingUser || !existingUser.emailVerified) {
+    //     throw false
+    //   }
+    //   return true; // Allow sign-in if user exists and email is verified
+    // },
     async session({ session, token }) {
       if (token.sub && session.user) {
         session.user.id = token.sub; // Ensure user ID is available in the session
