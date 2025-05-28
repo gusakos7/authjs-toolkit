@@ -16,6 +16,8 @@ export const authRoutes = [
   "/auth/login",
   "/auth/register",
   "/auth/error",
+  "/auth/reset",
+  "/auth/new-password"
 ]
 /**
  * An array of routes that are accessible to the public
