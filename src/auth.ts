@@ -1,4 +1,4 @@
-import NextAuth, { DefaultSession } from "next-auth"
+import NextAuth from "next-auth"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 
 import authConfig from "./auth.config"
@@ -7,18 +7,7 @@ import { getUserById } from "./data/user"
 import { UserRole } from "@prisma/client"
 import { getTwoFactorConfirmationByUserId } from "@//data/two-factor-confirmation"
 
-// Extend the Session and User types to include 'role'
-declare module "next-auth" {
-  interface Session {
-    user: {
-      id: string
-      role?: string
-    } & DefaultSession["user"]
-  }
-  interface User {
-    role?: string
-  }
-}
+
 // * https://authjs.dev/guides/edge-compatibility#split-config
 export const { handlers, signIn, signOut, auth } = NextAuth({
   // * https://authjs.dev/reference/nextjs#events
@@ -66,16 +55,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token.role && session.user) {
         session.user.role = token.role as UserRole; // Add user role to the session
       }
-      console.log({ session, token });
+      if (session.user) {
+        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean
+      }
       return session
     },
     async jwt({ token }) {
-      console.log("JWT Callback:", token);
       if (!token.sub) return token;
       const existingUser = await getUserById(token.sub);
       if (!existingUser) return token;
       token.role = existingUser.role; // Add user role to the token
-
+      token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled
       return token;
     }
   },
