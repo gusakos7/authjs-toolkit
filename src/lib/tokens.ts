@@ -9,7 +9,7 @@ import { getTwoFactorTokenByEmail } from '@/data/two-factor-token';
 export const generateTwoFactorToken = async (email: string) => {
   // it is different than the other two token, we want it to be 6-digit number
   const token = crypto.randomInt(100_000, 1_000_000).toString()
-  const expires = new Date(new Date().getTime() + 15 * 60 * 1000) // 15 minutes
+  const expires = new Date(new Date().getTime() + 5 * 60 * 1000) // 5 minutes
 
   const existingToken = await getTwoFactorTokenByEmail(email)
 
@@ -33,7 +33,7 @@ export const generateTwoFactorToken = async (email: string) => {
 
 export const generatePasswordResetToken = async (email: string) => {
   const token = uuidv4()
-  const expires = new Date(new Date().getTime() + 3600 * 1000)
+  const expires = new Date(new Date().getTime() + 30 * 60 * 1000) // 30 min
 
   const existingToken = await getPasswordResetTokenByEmail(email)
 
@@ -58,7 +58,7 @@ export const generatePasswordResetToken = async (email: string) => {
 
 export const generateVerificationToken = async (email: string) => {
   const token = uuidv4();
-  const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour expiration
+  const expires = new Date(Date.now() + 39 * 60 * 1000); // 30 min expiration
 
   const existingToken = await getVerificationTokenByEmail(email)
 
