@@ -8,8 +8,7 @@ export const getVerificationTokenByEmail = async (email: string) => {
       }
     })
     return verificationToken;
-  } catch (error) {
-    console.log({ errorInGetVerificationTokenByEmail: error });
+  } catch {
     return null
   }
 }
@@ -22,8 +21,7 @@ export const getVerificationTokenByToken = async (token: string) => {
       }
     })
     return verificationToken;
-  } catch (error) {
-    console.log({ errorInGetVerificationTokenByToken: error });
+  } catch {
     return null
   }
 }

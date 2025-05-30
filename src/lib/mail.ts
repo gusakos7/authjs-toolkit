@@ -24,12 +24,14 @@ export const sendVerificationEmail = async (
 ) => {
   const confirmLink = `http://localhost:3000/auth/new-verification?token=${token}`
 
-  await resend.emails.send({
+  const res = await resend.emails.send({
     from: "onboarding@resend.dev",
     to: email,
     subject: "Confirm your email",
     html: `<p>Click <a href="${confirmLink}">here</a> to confirm email.</p>`
   })
+  // TODO: check errors
+  console.log({ res })
 }
 
 export const sendPasswordResetEmail = async (

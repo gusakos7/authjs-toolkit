@@ -43,9 +43,6 @@ export const RegisterForm = () => {
         setError(data.error);
       });
     });
-    console.log(values);
-
-    // Handle login logic here
   };
 
   return (

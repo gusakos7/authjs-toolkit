@@ -46,7 +46,6 @@ export const NewPasswordForm = () => {
         setError(data?.error);
       });
     });
-    console.log(values);
 
     // Handle login logic here
   };

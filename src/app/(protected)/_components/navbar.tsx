@@ -8,7 +8,6 @@ import React from "react";
 
 export const Navbar = () => {
   const pathname = usePathname();
-  console.log({ pathname });
   return (
     <nav className="bg-secondary flex justify-between items-center p-4 rounded-xl shadow-sm w-[600px]">
       <div className="flex gap-x-2">
