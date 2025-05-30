@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import { BackButton } from "./back-button";
 import { Header } from "./header";
@@ -26,9 +27,11 @@ export const CardWrapper = ({
       </CardHeader>
       <CardContent>{children}</CardContent>
       {showSocial && (
-        <CardFooter>
-          <Social />
-        </CardFooter>
+        <Suspense>
+          <CardFooter>
+            <Social />
+          </CardFooter>
+        </Suspense>
       )}
       <CardFooter>
         <BackButton label={backButtonLabel} href={backButtonHref} />

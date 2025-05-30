@@ -10,7 +10,6 @@ import { revalidatePath } from 'next/cache'
 import { generateVerificationToken } from '@/lib/tokens'
 import { sendVerificationEmail } from '@/lib/mail'
 import bcrypt from 'bcryptjs'
-import { signOut } from '@/auth'
 
 export const settings = async (values: z.infer<typeof SettingsSchema>) => {
   const user = await currentUser()
