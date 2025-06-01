@@ -11,11 +11,11 @@ import { getAccountByUserId } from "./data/account"
 
 // * https://authjs.dev/guides/edge-compatibility#split-config
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  // * https://authjs.dev/reference/nextjs#events
   pages: {
     signIn: "/auth/login",
     error: "/auth/error",
   },
+  // * https://authjs.dev/reference/nextjs#events
   events: {
     async linkAccount({ user }) {
       await db.user.update({
@@ -67,6 +67,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session
     },
     async jwt({ token }) {
+      if (typeof token.exp === "number" && token.exp > new Date().getTime()) {
+        return null
+      }
       if (!token.sub) return token;
 
       const existingUser = await getUserById(token.sub);
@@ -87,6 +90,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(db),
   session: {
     strategy: "jwt",
+    maxAge: 60 * 15,
   },
   ...authConfig
 })

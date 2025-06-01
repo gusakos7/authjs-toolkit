@@ -12,6 +12,7 @@ import { sendVerificationEmail, sendTwoFactorTokenEmail } from "@/lib/mail";
 import { getTwoFactorTokenByEmail } from "@/data/two-factor-token";
 import { db } from "@/lib/db";
 import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
+import bcrypt from "bcryptjs";
 
 export const login = async (values: z.infer<typeof LoginSchema>, callbackUrl?: string | null) => {
   const validatedValues = LoginSchema.safeParse(values);
@@ -23,8 +24,15 @@ export const login = async (values: z.infer<typeof LoginSchema>, callbackUrl?: s
 
   const existingUser = await getUserByEmail(email)
 
+  // if user has no password means that he has signed in with a provider
   if (!existingUser || !existingUser.email || !existingUser.password) {
     return { error: "Email doesn't exist" }
+  }
+
+  const passwordMatch = await bcrypt.compare(password, existingUser.password)
+
+  if (!passwordMatch) {
+    return { error: "Invalid email or password" }
   }
 
   if (!existingUser.emailVerified) {
