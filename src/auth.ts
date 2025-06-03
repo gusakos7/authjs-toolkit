@@ -67,10 +67,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session
     },
     async jwt({ token }) {
-      if (typeof token.exp === "number" && token.exp > new Date().getTime()) {
+      if (typeof token.exp === "number" && token.exp < (Date.now() / 1000)) {
         return null
       }
-      if (!token.sub) return token;
+      if (!token.sub) return token;   // means the user is logged out
 
       const existingUser = await getUserById(token.sub);
 
@@ -90,7 +90,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(db),
   session: {
     strategy: "jwt",
-    maxAge: 60 * 15,
+    maxAge: 60 * 30, // 30 min
+    updateAge: 60 * 5, // Refresh if active every 5 min
   },
   ...authConfig
 })
