@@ -47,3 +47,14 @@ export const sendPasswordResetEmail = async (
     html: `<p>Click <a href="${resetLink}">here</a> to reset your password.</p>`
   })
 }
+
+export const sendChangeEmail = async (email: string, token: string) => {
+  const changeEmailLink = `${domain}/auth/change-email?token=${token}`
+
+  await resend.emails.send({
+    from: "onboarding@resend.dev",
+    to: email,
+    subject: "Change your email",
+    html: `<p>Click <a href="${changeEmailLink}">here</a> to change your email.</p>`
+  })
+}

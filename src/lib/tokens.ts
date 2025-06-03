@@ -5,6 +5,35 @@ import { db } from '@/lib/db';
 import { getVerificationTokenByEmail } from '@/data/verification-token';
 import { getPasswordResetTokenByEmail } from '@/data/password-reset-token';
 import { getTwoFactorTokenByEmail } from '@/data/two-factor-token';
+import { getChangeEmailTokenByEmail } from '@/data/change-email-token';
+
+
+export const generateChangeEmailToken = async (email: string, newEmail: string) => {
+  const token = uuidv4();
+  const expires = new Date(Date.now() + 39 * 60 * 1000); // 30 min expiration
+
+  const existingToken = await getChangeEmailTokenByEmail(email)
+
+  // delete token if exists
+  if (existingToken) {
+    await db.changeEmailToken.delete({
+      where: {
+        id: existingToken.id
+      }
+    })
+  }
+  // generate a new verification token
+  const changeEmailToken = await db.changeEmailToken.create({
+    data: {
+      email,
+      token,
+      expires,
+      newEmail
+    },
+  });
+  return changeEmailToken
+}
+
 
 export const generateTwoFactorToken = async (email: string) => {
   // it is different than the other two token, we want it to be 6-digit number
@@ -29,7 +58,6 @@ export const generateTwoFactorToken = async (email: string) => {
 
   return twoFactorToken
 }
-
 
 export const generatePasswordResetToken = async (email: string) => {
   const token = uuidv4()
