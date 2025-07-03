@@ -38,8 +38,11 @@ export const login = async (values: z.infer<typeof LoginSchema>, callbackUrl?: s
   if (!existingUser.emailVerified) {
     const verificationToken = await generateVerificationToken(existingUser.email)
 
-    await sendVerificationEmail(verificationToken.email, verificationToken.token)
+    const emailResponse = await sendVerificationEmail(verificationToken.email, verificationToken.token)
 
+    if (emailResponse?.error) {
+      return { error: emailResponse.error }
+    }
     return { success: "Confirmation email sent!" }
   }
 
@@ -82,8 +85,12 @@ export const login = async (values: z.infer<typeof LoginSchema>, callbackUrl?: s
     } else {
 
       const twoFactorToken = await generateTwoFactorToken(existingUser.email)
-      await sendTwoFactorTokenEmail(twoFactorToken.email, twoFactorToken.token)
 
+      const emailResponse = await sendTwoFactorTokenEmail(twoFactorToken.email, twoFactorToken.token)
+
+      if (emailResponse?.error) {
+        return { error: emailResponse.error }
+      }
       return { twoFactor: true }
     }
   }

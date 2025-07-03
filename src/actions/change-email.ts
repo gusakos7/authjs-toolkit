@@ -3,6 +3,7 @@
 import { db } from "@/lib/db"
 import { getUserByEmail } from "@/data/user"
 import { getChangeEmailTokenByToken } from "@/data/change-email-token"
+import { signOut } from "@/auth"
 
 export const changeEmail = async (token: string) => {
   const existingToken = await getChangeEmailTokenByToken(token)
@@ -27,12 +28,15 @@ export const changeEmail = async (token: string) => {
       id: existingUser.id
     },
     data: {
-      email: existingToken.newEmail
+      email: existingToken.newEmail,
+      emailVerified: null
     }
   })
 
   await db.changeEmailToken.delete({
     where: { id: existingToken.id }
   })
+
+  await signOut({ redirectTo: "/auth/login" })
   return { success: "Email verified!" }
 }

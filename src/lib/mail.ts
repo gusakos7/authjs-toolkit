@@ -9,12 +9,16 @@ export const sendTwoFactorTokenEmail = async (
   token: string
 ) => {
 
-  await resend.emails.send({
+  const res = await resend.emails.send({
     from: "onboarding@resend.dev",
     to: email,
     subject: "2FA Code",
     html: `<p>Your 2FA code: ${token}.</p>`
   })
+
+  if (res.error) {
+    return { error: res.error?.message }
+  }
 }
 
 
@@ -32,6 +36,9 @@ export const sendVerificationEmail = async (
   })
   // TODO: check errors
   console.log({ res })
+  if (res.error) {
+    return { error: res.error?.message }
+  }
 }
 
 export const sendPasswordResetEmail = async (
@@ -40,21 +47,29 @@ export const sendPasswordResetEmail = async (
 ) => {
   const resetLink = `${domain}/auth/new-password?token=${token}`
 
-  await resend.emails.send({
+  const res = await resend.emails.send({
     from: "onboarding@resend.dev",
     to: email,
     subject: "Reset your password",
     html: `<p>Click <a href="${resetLink}">here</a> to reset your password.</p>`
   })
+
+  if (res.error) {
+    return { error: res.error?.message }
+  }
 }
 
 export const sendChangeEmail = async (email: string, token: string) => {
   const changeEmailLink = `${domain}/auth/change-email?token=${token}`
 
-  await resend.emails.send({
+  const res = await resend.emails.send({
     from: "onboarding@resend.dev",
     to: email,
     subject: "Change your email",
     html: `<p>Click <a href="${changeEmailLink}">here</a> to change your email.</p>`
   })
+
+  if (res.error) {
+    return { error: res.error?.message }
+  }
 }

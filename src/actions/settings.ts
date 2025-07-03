@@ -46,17 +46,12 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
 
     const changeEmailToken = await generateChangeEmailToken(user.email, values.email)
 
-    await sendChangeEmail(changeEmailToken.email, changeEmailToken.token)
-    // ! To have verification mail working you should update user.
-    // ! Maybe also delete session by signing out
-    // await db.user.update({
-    //   where: { id: dbUser.id },
-    //   data: {
-    //     ...values,
-    //     emailVerified: null
-    //   }
-    // })
-    // await signOut({ redirectTo: "/" })
+    const emailResponse = await sendChangeEmail(changeEmailToken.email, changeEmailToken.token)
+
+    if (emailResponse?.error) {
+      return { error: emailResponse.error }
+    }
+
     return { success: "Verification email sent!" }
   }
   // PASSWORD

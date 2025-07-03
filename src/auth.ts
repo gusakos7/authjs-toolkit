@@ -74,7 +74,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       const existingUser = await getUserById(token.sub);
 
-      if (!existingUser) return token;
+      if (!existingUser?.emailVerified) return null;
 
       const existingAccount = await getAccountByUserId(existingUser.id)
 
